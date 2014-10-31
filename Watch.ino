@@ -883,10 +883,6 @@ void drawClock() {
 	if (updateIndicator)
 		drawIndicator();
 
-	char s[3] = " ";
-	int8_t ls = display.getFontLineSpacing();
-	int8_t zeroDigitWidth = display.getStrPixelWidth("0");
-
 	switch (clockStyle)
 	{
 
@@ -927,9 +923,6 @@ void drawIdleClock() {
 
 	if (updateIndicator)
 		drawIndicator();
-
-	char s[3] = " ";
-	int8_t zeroDigitWidth = display.getStrPixelWidth("0");
 
 	drawClockDigital(centerX - 29, centerY - 4);
 }
