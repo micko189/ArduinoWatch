@@ -185,6 +185,8 @@ void setup()   {
 	centerY = 64 / 2;
 	iRadius = centerY - 2;
 
+	iWeek = calcDayOfWeekIndex();
+
 	//BTSerial.begin(9600);  // set the data rate for the BT port
 }
 
@@ -578,36 +580,35 @@ void onDraw(unsigned long currentTime) {
 	//return;
 	if (!isDisplayTime(currentTime))    // Do not re-draw at every tick
 		return;
-
-	if (displayMode == DISPLAY_MODE_START_UP) 
+	switch (displayMode)
 	{
+	case DISPLAY_MODE_START_UP:
 		drawStartUp();
-	}
-	else if (displayMode == DISPLAY_MODE_CLOCK) 
-	{
+		break;
+
+	case DISPLAY_MODE_CLOCK:
 		if (isClicked == LOW) {    // User input received
 			startEmergencyMode();
-			setPageChangeTime(0);    // Change mode with no page-delay
+			//setPageChangeTime(0);    // Change mode with no page-delay
 			setNextDisplayTime(currentTime, 0);    // Do not wait next re-draw time
 		}
-		else 
+		else
 		{
 			drawClock();
-
-			if (isPageChangeTime(currentTime)) {  // It's time to go into idle mode
-				startIdleMode();
-				setPageChangeTime(currentTime);  // Set a short delay
-			}
+			//if (isPageChangeTime(currentTime)) {  // It's time to go into idle mode
+				//startIdleMode();
+				//setPageChangeTime(currentTime);  // Set a short delay
+			//}
 			setNextDisplayTime(currentTime, CLOCK_DISP_INTERVAL);
 		}
-	}
-	else if (displayMode == DISPLAY_MODE_EMERGENCY_MSG) 
-	{
-		if (findNextEmerMessage()) 
+		break;
+
+	case DISPLAY_MODE_EMERGENCY_MSG:
+		if (findNextEmerMessage())
 		{
 			drawEmergency();
 			emgCurDisp++;
-			if (emgCurDisp >= EMG_COUNT_MAX) 
+			if (emgCurDisp >= EMG_COUNT_MAX)
 			{
 				emgCurDisp = 0;
 				startMessageMode();
@@ -615,20 +616,20 @@ void onDraw(unsigned long currentTime) {
 			setNextDisplayTime(currentTime, EMERGENCY_DISP_INTERVAL);
 		}
 		// There's no message left to display. Go to normal message mode.
-		else 
+		else
 		{
 			startMessageMode();
 			//setPageChangeTime(0);
 			setNextDisplayTime(currentTime, 0);  // with no re-draw interval
 		}
-	}
-	else if (displayMode == DISPLAY_MODE_NORMAL_MSG) 
-	{
-		if (findNextNormalMessage()) 
+		break;
+
+	case DISPLAY_MODE_NORMAL_MSG:
+		if (findNextNormalMessage())
 		{
 			drawMessage();
 			msgCurDisp++;
-			if (msgCurDisp >= MSG_COUNT_MAX) 
+			if (msgCurDisp >= MSG_COUNT_MAX)
 			{
 				msgCurDisp = 0;
 				startClockMode();
@@ -636,29 +637,30 @@ void onDraw(unsigned long currentTime) {
 			setNextDisplayTime(currentTime, MESSAGE_DISP_INTERVAL);
 		}
 		// There's no message left to display. Go to clock mode.
-		else 
+		else
 		{
 			startClockMode();
-			setPageChangeTime(currentTime);
+			//setPageChangeTime(currentTime);
 			setNextDisplayTime(currentTime, 0);  // with no re-draw interval
 		}
-	}
-	else if (displayMode == DISPLAY_MODE_IDLE) 
-	{
+		break;
+
+	case DISPLAY_MODE_IDLE:
 		if (isClicked == LOW) {    // Wake up watch if there's an user input
 			startClockMode();
-			setPageChangeTime(currentTime);
+			//setPageChangeTime(currentTime);
 			setNextDisplayTime(currentTime, 0);
 		}
-		else 
+		else
 		{
 			drawIdleClock();
 			setNextDisplayTime(currentTime, IDLE_DISP_INTERVAL);
 		}
-	}
-	else 
-	{
+		break;
+
+	default:
 		startClockMode();    // This means there's an error
+		break;
 	}
 
 	isClicked = HIGH;
@@ -673,6 +675,7 @@ boolean isDisplayTime(unsigned long currentTime) {
 	{
 		return true;
 	}
+
 	if (isClicked == LOW) 
 	{
 		return true;
@@ -688,19 +691,19 @@ void setNextDisplayTime(unsigned long currentTime, unsigned long nextUpdateTime)
 }
 
 // Decide if it's the time to change page(mode)
-boolean isPageChangeTime(unsigned long currentTime) {
-	if (displayMode == DISPLAY_MODE_CLOCK) 
-	{
-		if (currentTime - mode_change_timer > CLOCK_DISPLAY_TIME)
-			return true;
-	}
-	return false;
-}
+//boolean isPageChangeTime(unsigned long currentTime) {
+//	if (displayMode == DISPLAY_MODE_CLOCK) 
+//	{
+//		if (currentTime - mode_change_timer > CLOCK_DISPLAY_TIME)
+//			return true;
+//	}
+//	return false;
+//}
 
 // Set time interval to next page(mode)
-void setPageChangeTime(unsigned long currentTime) {
-	mode_change_timer = currentTime;
-}
+//void setPageChangeTime(unsigned long currentTime) {
+//	mode_change_timer = currentTime;
+//}
 
 // Check if available emergency message exists or not
 boolean findNextEmerMessage() {
@@ -877,7 +880,6 @@ void drawMessage() {
 // Draw main clock screen
 // Clock style changes according to user selection
 void drawClock() {
-
 	if (updateIndicator)
 		drawIndicator();
 

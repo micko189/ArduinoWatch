@@ -61,8 +61,6 @@ void processTransaction();
 void onDraw(unsigned long currentTime);
 boolean isDisplayTime(unsigned long currentTime);
 void setNextDisplayTime(unsigned long currentTime, unsigned long nextUpdateTime);
-boolean isPageChangeTime(unsigned long currentTime);
-void setPageChangeTime(unsigned long currentTime);
 boolean findNextEmerMessage();
 boolean findNextNormalMessage();
 int countEmergency();
