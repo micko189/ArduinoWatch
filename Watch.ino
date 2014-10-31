@@ -99,9 +99,10 @@ char emgCurDisp = 0;
 
 //----- Time
 #define UPDATE_TIME_INTERVAL 60000
+short iYear = 2014;
 byte iMonth = 9;
 byte iDay = 20;
-byte iWeek = 6;    // 1: SUN, MON, TUE, WED, THU, FRI,SAT
+byte iWeek = 0;    // 1: SUN, MON, TUE, WED, THU, FRI,SAT // need to calculate this
 byte iAmPm = 1;    // 0:AM, 1:PM
 byte iHour = 7;
 byte iMinutes = 18;
@@ -112,6 +113,13 @@ char timeParsingIndex = 0;
 char timeBuffer[6] = { -1, -1, -1, -1, -1, -1 };
 PROGMEM const char* weekString[] = { "", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 PROGMEM const char* ampmString[] = { "AM", "PM" };
+PROGMEM const byte daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; //standard year
+
+PROGMEM const char* dayNames[] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+PROGMEM const char* months[] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+
+PROGMEM const short firstYear = 2000; //This is our start point
+PROGMEM const byte dayOffset = 6; //The first day of our start year may not be a Sunday ( in 1800 it was Wednesday)
 
 //----- Display features
 #define DISPLAY_MODE_START_UP 0
@@ -150,8 +158,6 @@ unsigned long mode_change_timer = 0;
 int buttonPin = 5;
 boolean isClicked = false;
 
-
-
 void setup()   {
 	//Serial.begin(9600);    // Do not enable serial. This makes serious problem because of shortage of RAM.
 	pinMode(buttonPin, INPUT);  // Defines button pin
@@ -174,7 +180,6 @@ void setup()   {
 		display.setHiColorByRGB(255, 255, 255);
 	}
 
-	//delay(1000);
 	//drawStartUp();    // Show RetroWatch Logo
 	centerX = 128 / 2;
 	centerY = 64 / 2;
@@ -214,28 +219,32 @@ void loop() {
 }
 
 
-
-
 ///////////////////////////////////
 //----- Utils
 ///////////////////////////////////
 void init_msg_array() {
-	for (int i = 0; i < MSG_COUNT_MAX; i++) {
-		for (int j = 0; j < MSG_BUFFER_MAX; j++) {
+	for (int i = 0; i < MSG_COUNT_MAX; i++) 
+	{
+		for (int j = 0; j < MSG_BUFFER_MAX; j++) 
+		{
 			msgBuffer[i][j] = 0x00;
 		}
 	}
+
 	msgParsingLine = 0;
 	msgParsingChar = 0;    // First 2 byte is management byte
 	msgCurDisp = 0;
 }
 
 void init_emg_array() {
-	for (int i = 0; i < EMG_COUNT_MAX; i++) {
-		for (int j = 0; j < EMG_BUFFER_MAX; j++) {
+	for (int i = 0; i < EMG_COUNT_MAX; i++) 
+	{
+		for (int j = 0; j < EMG_BUFFER_MAX; j++) 
+		{
 			emgBuffer[i][j] = 0x00;
 		}
 	}
+
 	emgParsingLine = 0;
 	emgParsingChar = 0;    // First 2 byte is management byte
 	emgCurDisp = 0;
@@ -253,31 +262,102 @@ void setTimeValue() {
 	iMinutes = timeBuffer[5];
 }
 
+//This function checks whether a particular year is a leap year
+bool isLeapYear(short year)
+{
+	return (!(year % 4) && (year % 100)) || !(year % 400);
+}
+
+byte getDaysInMonth(byte month)
+{
+	byte days = 0;
+	if (month != 2)
+	{
+		return daysInMonth[month];
+	}
+	else
+	{
+		return (isLeapYear(iYear)) ? 29 : daysInMonth[month];
+	}
+}
+
+short daysPassedInCurrentYear(byte month, byte day)
+{
+	int passed = 0;
+	for (size_t i = 0; i < month; i++)
+	{
+		passed += getDaysInMonth(i);
+	}
+
+	return passed + day;
+}
+
+//This function calculates the number of days passed from some start point year
+int calcDaysSoFar(short year, byte month, byte day)
+{
+	int days;
+
+	//calculates basic number of days passed 
+	days = (year - firstYear) * 365;
+	days += dayOffset;
+	days += daysPassedInCurrentYear(month - 1, day);
+
+	//add on the extra leapdays for past years
+	for (int count = firstYear; count < year; count += 4)
+	{
+		if (isLeapYear(count))
+		{
+			days++;
+		}
+	}
+
+	return days;
+}
+
+byte calcDayOfWeekIndex()
+{
+	return (byte)calcDaysSoFar(iYear, iMonth, iDay) % 7;
+}
+
 void updateTime(unsigned long current_time) {
-	if (iMinutes >= 0) {
-		if (current_time - prevClockTime > UPDATE_TIME_INTERVAL) {
+	if (iMinutes >= 0) 
+	{
+		if (current_time - prevClockTime > UPDATE_TIME_INTERVAL) 
+		{
 			// Increase time
 			iMinutes++;
-			if (iMinutes >= 60) {
+			if (iMinutes >= 60) 
+			{
 				iMinutes = 0;
 				iHour++;
-				if (iHour > 12) {
+				if (iHour > 12) 
+				{
 					iHour = 1;
 					(iAmPm == 0) ? iAmPm = 1 : iAmPm = 0;
-					if (iAmPm == 0) {
+					if (iAmPm == 0) 
+					{
 						iWeek++;
 						if (iWeek > 7)
 							iWeek = 1;
 						iDay++;
-						if (iDay > 30)  // Yes. day is not exact.
+						if (iDay > getDaysInMonth(iMonth))
+						{
 							iDay = 1;
+							iMonth++;
+							if (iMonth > 12)
+							{
+								iYear++;
+							}
+						}
 					}
 				}
 			}
+
 			prevClockTime = current_time;
 		}
 	}
-	else {
+	else 
+	{
 		displayMode = DISPLAY_MODE_START_UP;
 	}
 }
@@ -289,8 +369,10 @@ void updateTime(unsigned long current_time) {
 // Parsing packet according to current mode
 boolean receiveBluetoothData() {
 	int isTransactionEnded = false;
-	while (!isTransactionEnded) {
-		if (BTSerial.available()) {
+	while (!isTransactionEnded) 
+	{
+		if (BTSerial.available()) 
+		{
 			byte c = BTSerial.read();
 
 			if (c == 0xFF && TRANSACTION_POINTER != TR_MODE_WAIT_MESSAGE) return false;
@@ -315,10 +397,12 @@ boolean receiveBluetoothData() {
 			}
 
 		}  // End of if(BTSerial.available())
-		else {
+		else 
+		{
 			isTransactionEnded = true;
 		}
 	}  // End of while()
+
 	return true;
 }  // End of receiveBluetoothData()
 
