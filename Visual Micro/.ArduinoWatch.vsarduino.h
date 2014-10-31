@@ -49,7 +49,7 @@ byte getDaysInMonth(byte month);
 short daysPassedInCurrentYear(byte month, byte day);
 int calcDaysSoFar(short year, byte month, byte day);
 byte calcDayOfWeekIndex();
-void updateTime(unsigned long current_time);
+void updateTime(unsigned long current_time_milis);
 boolean receiveBluetoothData();
 void parseStartSignal(byte c);
 void parseCommand(byte c);

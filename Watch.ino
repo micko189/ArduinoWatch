@@ -193,7 +193,7 @@ void setup()   {
 
 void loop() {
 	boolean isReceived = false;
-	unsigned long current_time = 0;
+	unsigned long current_time_milis = 0;
 
 	// Get button input
 	//if(digitalRead(buttonPin) == LOW) isClicked = LOW;
@@ -202,14 +202,14 @@ void loop() {
 	//isReceived = receiveBluetoothData();
 
 	// Update clock time
-	current_time = millis();
-	updateTime(current_time);
+	current_time_milis = millis();
+	updateTime(current_time_milis);
 
 	// picture loop
 	display.firstPage();
 	do {
 		// Display routine
-		onDraw(current_time);
+		onDraw(current_time_milis);
 	} while (display.nextPage());
 
 	// rebuild the picture after some delay
@@ -321,12 +321,12 @@ byte calcDayOfWeekIndex()
 	return (byte)calcDaysSoFar(iYear, iMonth, iDay) % 7;
 }
 
-void updateTime(unsigned long current_time) {
+void updateTime(unsigned long current_time_milis) {
 	if (iMinutes >= 0) 
 	{
-		if (current_time - prevClockTime > UPDATE_TIME_INTERVAL) 
+		if (current_time_milis - prevClockTime > UPDATE_TIME_INTERVAL) // check if one second has elapsed
 		{
-			// Increase time
+			// Increase time by incrementing minutes
 			iMinutes++;
 			if (iMinutes >= 60) 
 			{
@@ -355,7 +355,7 @@ void updateTime(unsigned long current_time) {
 				}
 			}
 
-			prevClockTime = current_time;
+			prevClockTime = current_time_milis;
 		}
 	}
 	else 
@@ -577,9 +577,9 @@ void onDraw(unsigned long currentTime) {
 	display.setFont(u8g_font_unifont);
 	//u8g.setFont(u8g_font_osb21);
 
-	//return;
-	if (!isDisplayTime(currentTime))    // Do not re-draw at every tick
+	if (!isDisplayTime(currentTime))    // Do not re-draw at every loop (100 tics)
 		return;
+
 	switch (displayMode)
 	{
 	case DISPLAY_MODE_START_UP:
@@ -887,25 +887,28 @@ void drawClock() {
 	int8_t ls = display.getFontLineSpacing();
 	int8_t zeroDigitWidth = display.getStrPixelWidth("0");
 
-	// CLOCK_STYLE_SIMPLE_DIGIT
-	if (clockStyle == CLOCK_STYLE_SIMPLE_DIGIT)
+	switch (clockStyle)
 	{
+
+	case CLOCK_STYLE_SIMPLE_DIGIT:
+
 		display.drawStr(centerX - 34, centerY - 17, (const char*)pgm_read_word(&(weekString[iWeek])));
 		display.drawStr(centerX + 11, centerY - 17, (const char*)pgm_read_word(&(ampmString[iAmPm])));
 
 		drawClockDigital(centerX - 29, centerY + 6);
-	}
-	// CLOCK_STYLE_SIMPLE_MIX
-	else if (clockStyle == CLOCK_STYLE_SIMPLE_MIX) {
+
+		break;
+
+	case CLOCK_STYLE_SIMPLE_MIX:
 		drawClockAnalog(iRadius - 6);
 
 		display.drawStr(centerY * 2 + 3, 23, (const char*)pgm_read_word(&(weekString[iWeek])));
 		display.drawStr(centerY * 2 + 28, 23, (const char*)pgm_read_word(&(ampmString[iAmPm])));
 
-		drawClockDigital(centerY * 2, 37);	
-	}
-	else {
-		// CLOCK_STYLE_SIMPLE_ANALOG.
+		drawClockDigital(centerY * 2, 37);
+		break;
+
+	case CLOCK_STYLE_SIMPLE_ANALOG:
 		drawClockAnalog(iRadius);
 
 		iSecond++;
@@ -913,7 +916,10 @@ void drawClock() {
 		{
 			iSecond = 0;
 		}
+
+		break;
 	}
+	
 }
 
 // Draw idle page
