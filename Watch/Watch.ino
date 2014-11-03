@@ -907,13 +907,13 @@ void drawClock() {
 
 	case CLOCK_STYLE_SIMPLE_MIX:
 //Serial.println("drawClock2");
-		drawClockAnalog(0,-25,iRadius - 6);
+		drawClockAnalog(0,-30,iRadius - 6);
 
 		display.drawStr(centerY * 2 + 3, 23, (const char*)pgm_read_word(&(weekString[iWeek])));
 		display.drawStr(centerY * 2 + 28, 23, (const char*)pgm_read_word(&(ampmString[iAmPm])));
 
-                display.setFont(u8g_font_gdb12r);
-		drawClockDigital(centerY * 2, 45);
+                display.setFont(u8g_font_helvB18r);
+		drawClockDigital(centerY * 2 - 3, 45);
 		break;
 
 	case CLOCK_STYLE_SIMPLE_ANALOG:
