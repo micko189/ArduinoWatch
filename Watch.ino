@@ -111,12 +111,12 @@ byte iSecond = 0;
 #define TIME_BUFFER_MAX 6
 char timeParsingIndex = 0;
 char timeBuffer[6] = { -1, -1, -1, -1, -1, -1 };
-PROGMEM const char* weekString[] = { "", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-PROGMEM const char* ampmString[] = { "AM", "PM" };
+PGM_P const weekString[] PROGMEM = { "", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+PGM_P const ampmString[] PROGMEM = { "AM", "PM" };
 PROGMEM const byte daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; //standard year
 
-PROGMEM const char* dayNames[] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-PROGMEM const char* months[] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+PGM_P const dayNames[] PROGMEM = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+PGM_P const months[] PROGMEM = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
 PROGMEM const short firstYear = 2000; //This is our start point
 PROGMEM const byte dayOffset = 6; //The first day of our start year may not be a Sunday ( in 1800 it was Wednesday)
