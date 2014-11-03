@@ -157,6 +157,7 @@ unsigned long mode_change_timer = 0;
 //----- Button control
 int buttonPin = 5;
 boolean isClicked = false;
+byte startUp = 0;
 
 void setup()   {
 	//Serial.begin(9600);    // Do not enable serial. This makes serious problem because of shortage of RAM.
@@ -819,7 +820,7 @@ void drawIndicator() {
 // RetroWatch splash screen
 void drawStartUp() {
 
-	display.drawBitmap(10, 15, 24, 24, IMG_logo_24x24);
+	//display.drawBitmap(10, 15, 24, 24, IMG_logo_24x24);
 
 	display.drawStr(45, 12, "Retro");
 
@@ -827,7 +828,11 @@ void drawStartUp() {
 
 	display.drawStr(45, 45, "Arduino v1.0");
 
-	startClockMode();
+	if(startUp++ < 20)
+	{
+		startUp = 0;
+		startClockMode();
+	}
 }
 
 // Draw emergency message page
@@ -935,23 +940,23 @@ void drawClockDigital(byte xPos, byte yPos) {
 	if (iHour < 10)
 	{
 		display.drawStr(xPos, yPos, "0");
-		display.drawStr(xPos, yPos + zeroDigitWidth, itoa(iHour, s, 10));
+		display.drawStr(xPos + zeroDigitWidth+2, yPos, itoa(iHour, s, 10));
 	}
 	else
 	{
 		display.drawStr(xPos, yPos, itoa(iHour, s, 10));
 	}
 
-	display.drawStr(xPos, yPos + zeroDigitWidth * 2, ":");
+	display.drawStr(xPos + (zeroDigitWidth+2) * 2, yPos, ":");
 
 	if (iMinutes < 10)
 	{
-		display.drawStr(xPos, yPos + zeroDigitWidth * 3, "0");
-		display.drawStr(xPos, yPos + zeroDigitWidth * 4, itoa(iMinutes, s, 10));
+		display.drawStr(xPos + (zeroDigitWidth+2) * 3, yPos, "0");
+		display.drawStr(xPos + (zeroDigitWidth+2) * 4, yPos, itoa(iMinutes, s, 10));
 	}
 	else
 	{
-		display.drawStr(xPos, yPos + zeroDigitWidth * 3, itoa(iMinutes, s, 10));
+		display.drawStr(xPos + (zeroDigitWidth+2) * 3, yPos, itoa(iMinutes, s, 10));
 	}
 }
 
