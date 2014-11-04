@@ -84,6 +84,6 @@ void drawIcon(int posx, int posy, int icon_num);
 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino\arduino.h"
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\variants\standard\pins_arduino.h" 
-#include "C:\Users\milan.ajdinovic\Documents\GitHub\ArduinoWatch\Watch.ino"
-#include "C:\Users\milan.ajdinovic\Documents\GitHub\ArduinoWatch\bitmap.h"
+#include "C:\Users\milan.ajdinovic\Documents\GitHub\ArduinoWatch\Watch\Watch.ino"
+#include "C:\Users\milan.ajdinovic\Documents\GitHub\ArduinoWatch\Watch\bitmap.h"
 #endif

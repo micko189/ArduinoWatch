@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Visual Micro\.Watch.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Visual Micro\.ArduinoWatch.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
