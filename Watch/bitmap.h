@@ -1264,10 +1264,10 @@ const unsigned char PROGMEM ICON_BITMAP_65[] = {
 0x00,0x00
 };
 
-/*
+
 //----- Add new icon to below array
 //----- You can access icon by index
-PGM_P const bitmap_array[] PROGMEM = {
+const unsigned char PROGMEM * const bitmap_array[] PROGMEM = {
 ICON_BITMAP_1, ICON_BITMAP_2, ICON_BITMAP_3, ICON_BITMAP_4, ICON_BITMAP_5,     
 ICON_BITMAP_6, ICON_BITMAP_7, ICON_BITMAP_8, ICON_BITMAP_9, ICON_BITMAP_10,  // ~10
 
@@ -1288,7 +1288,7 @@ ICON_BITMAP_56, ICON_BITMAP_57, ICON_BITMAP_58, ICON_BITMAP_59, ICON_BITMAP_60, 
 
 ICON_BITMAP_61, ICON_BITMAP_62, ICON_BITMAP_63, ICON_BITMAP_64, ICON_BITMAP_65  // ~65
 };
-*/
+
 /*
  * Check icon name. It's arranged by the sequence of icon array.
  

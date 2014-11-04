@@ -68,14 +68,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="Watch.ino">
-      <FileType>CppCode</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="bitmap.h" />
     <ClInclude Include="Visual Micro\.ArduinoWatch.vsarduino.h" />
     <ClInclude Include="Visual Micro\.Watch.vsarduino.h" />
+    <ClInclude Include="Watch\bitmap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Watch\Watch.ino" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

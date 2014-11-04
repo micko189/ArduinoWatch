@@ -15,17 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Watch.ino" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Visual Micro\.Watch.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bitmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Visual Micro\.ArduinoWatch.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Watch\bitmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Watch\Watch.ino">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

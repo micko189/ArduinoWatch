@@ -76,7 +76,7 @@ void drawMessage();
 void drawClock();
 void drawIdleClock();
 void drawClockDigital(byte xPos, byte yPos);
-void drawClockAnalog(byte radius);
+void drawClockAnalog(short offsetY, short offsetX, byte radius);
 int getCenterAlignedXOfMsg(int msgIndex);
 int getCenterAlignedXOfEmg(int emgIndex);
 void showTimePin(int center_x, int center_y, double pl1, double pl2, double pl3);
